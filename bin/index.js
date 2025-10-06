@@ -25,7 +25,7 @@ async function main() {
     type: "list",
     name: "framework",
     message: "Choose a framework:",
-    choices: ["React", "Angular", "Vanilla JS"]
+    choices: ["React", "Angular", "Vanilla"]
   });
 
   const answers = await inquirer.prompt(questions);

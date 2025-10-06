@@ -1,5 +1,5 @@
 {
-    "name": "angular-template",
+    "name": "template-react",
     "version": "1.0.0",
     "scripts": {
       "start": "ng serve",
