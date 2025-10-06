@@ -1,97 +1,151 @@
-# Project Generator CLI
+# My CLI Tool
 
-A simple, customizable **project scaffolding CLI** to quickly generate frontend, backend, or fullstack apps.
-Inspired by tools like `create-vite`, but designed for flexibility with your own templates.
-
----
-
-## 📦 Installation
-
-### Global Install (Recommended)
-
-```bash
-npm install -g .
-```
-
-or use symlink during development:
-
-```bash
-npm link
-```
+`My CLI Tool` is a Node.js-based CLI that allows you to scaffold **frontend, backend, or fullstack web projects** with predefined templates. It supports frameworks like React, Angular, Vanilla JS for frontend, and Express, NestJS for backend.
 
 ---
 
-## 🚀 Usage
+## Features
 
-### Create a new project
-
-```bash
-ac-cli my-app
-```
-
-You’ll be prompted to choose a framework:
-
-```
-🚀 Welcome to My CLI Tool
-✔ Project name: my-app
-✔ Choose a framework: React / Angular / Vanilla JS
-```
-
-Then a new folder `my-app/` will be created with the template.
+* Scaffold **Frontend** apps (React, Angular, Vanilla JS)
+* Scaffold **Backend** apps (Express, NestJS)
+* Scaffold **Fullstack** apps (frontend + backend combined)
+* Dynamic `package.json` updates based on project name
+* Automated dependency installation for frontend and backend
+* Integrated **Makefile** for faster workflow
 
 ---
 
-### Non-interactive mode
+## 1️⃣ Installation
+
+Clone the repository:
 
 ```bash
-ac-cli my-app react
+git clone https://github.com/kishor-aracreate/project-generator-cli-test.git
+cd project-generator-cli-test
 ```
 
-Skips the prompt and directly scaffolds a React project.
+Install dependencies:
+
+```bash
+make install
+```
+
+Link CLI globally for development:
+
+```bash
+make link
+```
+
+> Now you can use the `ac-cli` command anywhere.
 
 ---
 
-### Run the project
+## 2️⃣ Usage
 
-After scaffolding:
+Run the CLI interactively:
 
 ```bash
-cd my-app
-npm install
+ac-cli
+```
+
+The CLI will prompt you for:
+
+1. **Project name**
+2. **Project type**: Frontend / Backend / Fullstack
+3. **Framework selection** based on project type:
+
+   * Frontend → React / Angular / Vanilla JS
+   * Backend → Express / NestJS
+   * Fullstack → select both frontend and backend
+
+After selection, the CLI will scaffold the project and update `package.json` names automatically.
+
+---
+
+## 3️⃣ Makefile Commands
+
+| Command                        | Description                                                                      |
+| ------------------------------ | -------------------------------------------------------------------------------- |
+| `make install`                 | Installs CLI dependencies                                                        |
+| `make link`                    | Links CLI globally for testing                                                   |
+| `make unlink`                  | Unlinks CLI globally                                                             |
+| `make run`                     | Runs CLI interactively                                                           |
+| `make scaffold NAME=<project>` | Scaffold a new project with the given name (installs dependencies automatically) |
+| `make clean`                   | Removes `node_modules` and `package-lock.json`                                   |
+| `make help`                    | Shows help                                                                       |
+
+### Example: Scaffold a new project
+
+```bash
+make scaffold NAME=my-app
+```
+
+* CLI will prompt for project type and frameworks.
+* If fullstack, backend is scaffolded in `my-app/backend`.
+* Dependencies are installed automatically.
+
+---
+
+## 4️⃣ Template Structure
+
+```
+templates/
+├── frontend/
+│   ├── react/
+│   ├── angular/
+│   └── vanilla/
+├── backend/
+│   ├── express/
+│   └── nestjs/
+```
+
+* **Frontend templates**: Contains `package.json`, `src/`, `public/` or `index.html`
+* **Backend templates**: Contains `package.json`, `src/` or root files
+
+> For fullstack, frontend is copied to project root, backend is copied to `backend/` folder.
+
+---
+
+## 5️⃣ Adding New Templates
+
+1. Add the new template folder inside `templates/frontend` or `templates/backend`.
+2. Ensure it includes a `package.json` file.
+3. Update the CLI framework choices in `bin/mycli.js` if needed.
+
+---
+
+## 6️⃣ Notes
+
+* On Windows, use **Git Bash** or **WSL** to run Makefile commands.
+* Designed for extensibility: you can add new frontend or backend frameworks easily.
+* Fullstack projects will have **frontend at root** and **backend in `/backend` folder**.
+
+---
+
+## 7️⃣ Example Workflow
+
+```bash
+# Install CLI dependencies
+make install
+
+# Link CLI globally
+make link
+
+# Scaffold a fullstack project
+make scaffold NAME=my-fullstack-app
+# -> Choose Frontend: React
+# -> Choose Backend: Express
+
+# Navigate to frontend
+cd my-fullstack-app
+npm start
+
+# Navigate to backend
+cd backend
 npm start
 ```
 
 ---
 
-## 📂 Project Structure
+This README is now **focused solely on frontend, backend, and fullstack scaffolding**, no deployment options included.
 
-```
-my-cli-tool/
-├── bin/
-│   └── index.js          # CLI entrypoint
-├── src/
-│   ├── scaffold.js       # Project generation logic
-│   └── ...
-├── templates/
-│   ├── react/            # React starter template
-│   ├── angular/          # Angular starter template
-│   └── vanilla js/       # Vanilla JS starter template
-└── package.json
-```
-
----
-
-## 🛠 Features
-
-* Interactive prompts (via [Inquirer](https://www.npmjs.com/package/inquirer))
-* Dynamic project naming (updates `package.json` automatically)
-* Multiple framework templates (React, Angular, Vanilla JS by default)
-* Extensible – add your own templates in `/templates`
-
----
-
-## 🌱 Add a New Template
-
-1. Create a folder under `templates/` (e.g. `templates/express`)
-2. Put a `package.json` and source files inside.
-3. Add the framework name to the choices in `bin/index.js`.
