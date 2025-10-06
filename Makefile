@@ -1,50 +1,64 @@
-# Makefile for My CLI Tool
+# Variables
+NODE=node
+NPM=npm
 
-# Default task: show help
-all: help
 
-# Install CLI dependencies
+# Install dependencies
 install:
-	npm install
+	@$(NPM) install
 
-# Link CLI globally (for testing ac-cli command)
+# Link CLI globally
 link:
-	npm link
+	@$(NPM) link
 
 # Unlink CLI globally
 unlink:
-	npm unlink -g
+	@$(NPM) unlink -g my-cli-tool || true
 
 # Run CLI interactively
 run:
-	npx ac-cli
+	@$(NODE) bin/index.js
 
-# Scaffold a new project
-# Usage: make scaffold NAME=my-project
+# Scaffold project
+# Scaffold project
+# Usage: make scaffold PROJECT_NAME=my-app
 scaffold:
-	@if [ -z "$(NAME)" ]; then \
-		echo "❌ Please provide project name: make scaffold NAME=my-project"; \
-		exit 1; \
-	fi; \
-	npx ac-cli $(NAME); \
-	echo "✅ Project $(NAME) scaffolded successfully!"; \
-	if [ -d "$(NAME)/backend" ]; then \
-		echo "Installing backend dependencies..."; \
-		cd $(NAME)/backend && npm install; \
-	fi; \
-	echo "Installing frontend/main project dependencies..."; \
-	cd $(NAME) && npm install
+	@if [ -z "$(PROJECT_NAME)" ]; then \
+		node bin/index.js; \
+	else \
+		echo "⚡ Scaffolding project: $(PROJECT_NAME)"; \
+		node bin/index.js $(PROJECT_NAME); \
+	fi
 
-# Clean CLI project
+	@if [ -f "$(PROJECT_NAME)/package.json" ]; then \
+		cd $(PROJECT_NAME) && $(NPM) install; \
+	fi
+	@if [ -f "$(PROJECT_NAME)/backend/package.json" ]; then \
+		cd $(PROJECT_NAME)/backend && $(NPM) install; \
+	fi
+	@echo "✅ $(PROJECT_NAME) ready!"
+
+
+# Clean
 clean:
-	rm -rf node_modules package-lock.json
+	@rm -rf node_modules package-lock.json
 
-# Help
+# Lint
+lint:
+	@npx eslint src bin || true
+
+# Test
+test:
+	@$(NPM) test || true
+
+# Show help
 help:
 	@echo "Usage:"
-	@echo "  make install             # Install CLI dependencies"
-	@echo "  make link                # Link CLI globally"
-	@echo "  make unlink              # Unlink CLI globally"
-	@echo "  make run                 # Run CLI"
-	@echo "  make scaffold NAME=app   # Scaffold new project with given name"
-	@echo "  make clean               # Clean node_modules and lock file"
+	@echo "  make install            Install CLI dependencies"
+	@echo "  make link               Link CLI globally"
+	@echo "  make unlink             Unlink CLI globally"
+	@echo "  make run                Run CLI interactively"
+	@echo "  make scaffold NAME=app  Scaffold new project"
+	@echo "  make clean              Remove node_modules and lock file"
+	@echo "  make lint               Run linter"
+	@echo "  make test               Run tests"
