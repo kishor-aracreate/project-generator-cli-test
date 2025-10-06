@@ -21,20 +21,64 @@ async function main() {
     });
   }
 
+  // Step 1: Ask project type
   questions.push({
     type: "list",
-    name: "framework",
-    message: "Choose a framework:",
-    choices: ["React", "Angular", "Vanilla"]
+    name: "projectType",
+    message: "Select project type:",
+    choices: ["Frontend", "Backend", "Full Stack"]
   });
 
+  // Step 2: Prompt questions in sequence
   const answers = await inquirer.prompt(questions);
 
-  // if projectName was passed as arg, prefer it
   const finalAnswers = {
-    ...answers,
-    projectName: projectName || answers.projectName
+    projectName: projectName || answers.projectName,
+    projectType: answers.projectType
   };
+
+  // Step 3: Ask framework(s) based on projectType
+  if (finalAnswers.projectType === "Frontend") {
+    const { frontendFramework } = await inquirer.prompt([
+      {
+        type: "list",
+        name: "frontendFramework",
+        message: "Choose a frontend framework:",
+        choices: ["React", "Angular", "Vanilla JS"]
+      }
+    ]);
+    finalAnswers.frontendFramework = frontendFramework;
+
+  } else if (finalAnswers.projectType === "Backend") {
+    const { backendFramework } = await inquirer.prompt([
+      {
+        type: "list",
+        name: "backendFramework",
+        message: "Choose a backend framework:",
+        choices: ["NestJS", "Express"]
+      }
+    ]);
+    finalAnswers.backendFramework = backendFramework;
+
+  } else if (finalAnswers.projectType === "Full Stack") {
+    // Ask both frontend and backend
+    const { frontendFramework, backendFramework } = await inquirer.prompt([
+      {
+        type: "list",
+        name: "frontendFramework",
+        message: "Choose a frontend framework:",
+        choices: ["React", "Angular", "Vanilla JS"]
+      },
+      {
+        type: "list",
+        name: "backendFramework",
+        message: "Choose a backend framework:",
+        choices: ["NestJS", "Express"]
+      }
+    ]);
+    finalAnswers.frontendFramework = frontendFramework;
+    finalAnswers.backendFramework = backendFramework;
+  }
 
   await createApp(finalAnswers);
 }
